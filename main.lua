@@ -158,7 +158,7 @@ local function updateCategories()
 		if count == 1 then
 			label = "Set: " .. firstSet
 		else
-			label = "Multiple ItemRack Sets"
+			label = "Multiple Sets"
 		end
 
 		local categoryItemList = customCategories[L:G(label)]
