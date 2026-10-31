@@ -36,6 +36,68 @@ local function getContextName(name)
 	return "BetterBags_ItemRack_" .. name
 end
 
+local QUEUE_CATEGORY_LABEL = "Itemrack Queue"
+
+local function getQueueEntryItemId(entry)
+	if entry == nil then
+		return nil
+	end
+
+	local rawId = entry
+	if type(entry) == "table" then
+		rawId = entry.id
+	end
+
+	if rawId == nil then
+		return nil
+	end
+
+	local id = tonumber(split(tostring(rawId), ":")[1])
+
+	if id == nil or id == 0 then
+		return nil
+	end
+
+	return id
+end
+
+local function collectQueueListItems(queueList, target)
+	if type(queueList) ~= "table" then
+		return
+	end
+
+	for _, entry in pairs(queueList) do
+		local id = getQueueEntryItemId(entry)
+		if id ~= nil then
+			target[id] = true
+		end
+	end
+end
+
+local function collectQueueItems()
+	local queueItems = {}
+
+	if type(ItemRackUser.Queues) == "table" then
+		for slot, queueList in pairs(ItemRackUser.Queues) do
+			printChat("Scanning global queue for slot: " .. tostring(slot))
+			collectQueueListItems(queueList, queueItems)
+		end
+	end
+
+	if type(ItemRackUser.Sets) == "table" then
+		for setName, setData in pairs(ItemRackUser.Sets) do
+			if type(setData) == "table" and type(setData.Queues) == "table" then
+				for slot, queueList in pairs(setData.Queues) do
+					printChat("Scanning queue for set '" .. tostring(setName) .. "' slot: " .. tostring(slot))
+					collectQueueListItems(queueList, queueItems)
+				end
+			end
+		end
+	end
+
+	return queueItems
+end
+
 local function updateCategories()
 	-- Wipe custom categories since we can't retrieve deleted set from ItemRack (Except maybe store duplicate of sets and check last version of it)
 	for category, _ in pairs(customCategories) do
@@ -112,6 +174,19 @@ local function updateCategories()
 			customCategories[L:G(label)] = {[itemId] = true}
 		end
 		-- printChat("Added item '" .. item .. "' to '" .. label .. "' category")
+	end
+
+	local queueItems = collectQueueItems()
+	if next(queueItems) ~= nil then
+		local queueCategory = customCategories[L:G(QUEUE_CATEGORY_LABEL)]
+		if queueCategory == nil then
+			queueCategory = {}
+			customCategories[L:G(QUEUE_CATEGORY_LABEL)] = queueCategory
+		end
+
+		for itemId, _ in pairs(queueItems) do
+			queueCategory[itemId] = true
+		end
 	end
 
 	for category, items in pairs(customCategories) do
