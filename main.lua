@@ -36,7 +36,7 @@ local function getContextName(name)
 	return "BetterBags_ItemRack_" .. name
 end
 
-local QUEUE_CATEGORY_LABEL = "Itemrack Queue"
+local QUEUE_CATEGORY_LABEL = "ItemRack Queues"
 
 local function getQueueEntryItemId(entry)
 	if entry == nil then
@@ -158,12 +158,7 @@ local function updateCategories()
 		if count == 1 then
 			label = "Set: " .. firstSet
 		else
-			local setNames = {}
-			for setName, _ in pairs(itemSets) do
-				table.insert(setNames, setName)
-			end
-
-			label = "Sets: ".. table.concat(setNames, ", ")
+			label = "Multiple ItemRack Sets"
 		end
 
 		local categoryItemList = customCategories[L:G(label)]
