@@ -1,10 +1,8 @@
-## Interface-Vanilla: 11507
-## Interface-TBC: 20505
-## Interface-Cata: 40402
+## Interface: 16001
 ## Title: BetterBags - ItemRack
 ## Notes: Add a category to BetterBags for ItemRack sets
-## Author: DJSchaffner
-## Version: @1.4.7
+## Author: kaidobit
+## Version: @1.4.8
 ## Dependencies: BetterBags, ItemRack
 
 main.lua
